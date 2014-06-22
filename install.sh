@@ -26,6 +26,8 @@ OSFILE="ArchLinuxARM-chromebook-latest.tar.gz"
 UBOOTHOST="https://github.com/jquagga/nv_uboot-spring/raw/master/"
 UBOOTFILE="nv_uboot-spring.kpart.gz"
 
+DOWNLOADER="curl --location --remote-name"
+
 if [ $DEVICE = $EMMC ]; then
     # for eMMC we need to get some things before we can partition
     echo -e "\n[archlinuxfr]\nSigLevel = Never\nServer = http://repo.archlinux.fr/arm\n" >> /etc/pacman.conf
@@ -51,11 +53,11 @@ mkfs.vfat -F 16 $P12
 
 cd /tmp
 
-if [ ! -f "${OSFILE}" ]; then
-    log "Downloading ${OSFILE}"
-    wget ${OSHOST}${OSFILE}
-else
+if [ -f "${OSFILE}" ] && tar -tf ${OSFILE} &>/dev/null; then
     log "Looks like you already have ${OSFILE}"
+else
+    log "Downloading ${OSFILE}"
+    ${DOWNLOADER} ${OSHOST}${OSFILE}
 fi
 
 log "Installing Arch to ${P3} (this will take a moment...)"
@@ -99,7 +101,7 @@ if [ $DEVICE = $EMMC ]; then
 else
     if [ ! -f "${UBOOTFILE}" ]; then
         log "Downloading ${UBOOTFILE}"
-        wget ${UBOOTHOST}${UBOOTFILE}
+        ${DOWNLOADER} ${UBOOTHOST}${UBOOTFILE}
     else
         log "Looks like you already have ${UBOOTFILE}"
     fi
