@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 log() {
     printf "\n\033[32m$*\033[00m\n"
@@ -53,7 +53,7 @@ mkfs.vfat -F 16 $P12
 
 cd /tmp
 
-if [ -f "${OSFILE}" ] && tar -tf ${OSFILE} &>/dev/null; then
+if [ -f "${OSFILE}" ] && tar -tf ${OSFILE} > /dev/null 2>&1; then
     log "Looks like you already have ${OSFILE}"
 else
     log "Downloading ${OSFILE}"
